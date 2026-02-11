@@ -1,0 +1,7 @@
+#!/bin/bash
+# MarkdownDual — opens markdown files in both Bike and Marked 2
+
+for f in "$@"; do
+    open -a "Bike" "$f"
+    open -a "Marked 2" "$f"
+done
