@@ -1,4 +1,4 @@
-# MarkdownDual
+# BikeMarked
 
 Minimal macOS app that opens `.md` files in both [Bike](https://www.hogbaysoftware.com/bike/) and [Marked 2](https://marked2app.com/) simultaneously.
 
@@ -25,4 +25,4 @@ make uninstall
 
 ## How it works
 
-MarkdownDual is a thin `.app` bundle wrapping a shell script. When macOS opens a `.md` file with it, the script passes the file to both Bike and Marked 2 via `open -a`. After both apps open, an AppleScript tiles them side-by-side — Bike on the left half of the screen, Marked 2 on the right. The `Info.plist` declares the `net.daringfireball.markdown` UTI so macOS recognizes it as a valid handler for markdown files.
+BikeMarked is a thin `.app` bundle wrapping a shell script. When macOS opens a `.md` file with it, the script passes the file to both Bike and Marked 2 via `open -a`. The `Info.plist` declares the `net.daringfireball.markdown` UTI so macOS recognizes it as a valid handler for markdown files.

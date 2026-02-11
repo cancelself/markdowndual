@@ -1,27 +1,28 @@
-APP_NAME := MarkdownDual
-BUNDLE_ID := com.local.markdowndual
+APP_NAME := BikeMarked
+BUNDLE_ID := com.local.bikemarked
 INSTALL_DIR := ~/Applications
 APP_BUNDLE := $(APP_NAME).app
-CONTENTS := $(APP_BUNDLE)/Contents
-MACOS := $(CONTENTS)/MacOS
 
 .PHONY: build install uninstall clean lint
 
 lint:
 	@echo "Checking plist syntax..."
 	plutil -lint Info.plist
-	@echo "Checking script syntax..."
-	bash -n $(APP_NAME)
+	@echo "Checking applescript syntax..."
+	osacompile -o /dev/null $(APP_NAME).applescript
 	@echo "Lint passed."
 
 build: lint
-	mkdir -p $(MACOS)
-	cp Info.plist $(CONTENTS)/Info.plist
-	cp $(APP_NAME) $(MACOS)/$(APP_NAME)
-	chmod +x $(MACOS)/$(APP_NAME)
+	osacompile -o $(APP_BUNDLE) $(APP_NAME).applescript
+	plutil -replace CFBundleIdentifier -string $(BUNDLE_ID) $(APP_BUNDLE)/Contents/Info.plist
+	plutil -replace CFBundleName -string $(APP_NAME) $(APP_BUNDLE)/Contents/Info.plist
+	plutil -replace CFBundleDisplayName -string $(APP_NAME) $(APP_BUNDLE)/Contents/Info.plist
+	/usr/libexec/PlistBuddy -c "Delete :CFBundleDocumentTypes" $(APP_BUNDLE)/Contents/Info.plist 2>/dev/null; true
+	/usr/libexec/PlistBuddy -c "Merge Info.plist" $(APP_BUNDLE)/Contents/Info.plist
 	@echo "Built $(APP_BUNDLE)"
 
 install: build
+	rm -rf $(INSTALL_DIR)/$(APP_BUNDLE)
 	cp -R $(APP_BUNDLE) $(INSTALL_DIR)/
 	/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f $(INSTALL_DIR)/$(APP_BUNDLE)
 	duti -s $(BUNDLE_ID) net.daringfireball.markdown all
