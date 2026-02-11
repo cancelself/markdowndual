@@ -1,7 +1,28 @@
 #!/bin/bash
-# MarkdownDual — opens markdown files in both Bike and Marked 2
+# MarkdownDual — opens markdown files in both Bike and Marked 2, tiled side-by-side
 
 for f in "$@"; do
     open -a "Bike" "$f"
     open -a "Marked 2" "$f"
 done
+
+# Give apps a moment to open their windows
+sleep 0.5
+
+osascript <<'APPLESCRIPT'
+tell application "Finder"
+    set {_, _, screenW, screenH} to bounds of window of desktop
+end tell
+
+set halfW to screenW / 2
+
+tell application "Bike"
+    activate
+    set bounds of front window to {0, 0, halfW, screenH}
+end tell
+
+tell application "Marked 2"
+    activate
+    set bounds of front window to {halfW, 0, screenW, screenH}
+end tell
+APPLESCRIPT
